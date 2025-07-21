@@ -1,0 +1,58 @@
+<div class="app-container">
+  <header class="header">
+    <h1>{{ title }}</h1>
+    <div class="controls">
+      <button 
+        class="btn btn-primary" 
+        [disabled]="isPolling"
+        (click)="startPolling()">
+        Start Polling
+      </button>
+      <button 
+        class="btn btn-secondary" 
+        [disabled]="!isPolling"
+        (click)="stopPolling()">
+        Stop Polling
+      </button>
+      <button 
+        class="btn btn-danger" 
+        (click)="clearGrid()">
+        Clear Grid
+      </button>
+      <div class="status">
+        <span class="status-indicator" [class.active]="isPolling"></span>
+        {{ isPolling ? 'Polling Active' : 'Polling Stopped' }}
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="grid-info">
+      <p>Messages in grid: {{ messages.length }}</p>
+      <p><small>Click on any tile to return it to the queue</small></p>
+    </div>
+
+    <div class="message-grid" *ngIf="messages.length > 0; else noMessages">
+      <div 
+        class="message-tile" 
+        *ngFor="let message of messages"
+        [style.background-color]="message.hex"
+        (click)="returnMessage(message)"
+        [title]="'Click to return ' + message.color + ' (' + message.id.substring(0, 8) + '...) to queue'">
+        <div class="tile-content">
+          <div class="color-name">{{ message.color }}</div>
+          <div class="color-hex">{{ message.hex }}</div>
+          <div class="message-id">{{ message.id.substring(0, 8) }}...</div>
+        </div>
+      </div>
+    </div>
+
+    <ng-template #noMessages>
+      <div class="no-messages">
+        <p>No messages currently displayed</p>
+        <p *ngIf="!isPolling"><small>Click "Start Polling" to begin fetching messages</small></p>
+        <p *ngIf="isPolling"><small>Waiting for messages from queue...</small></p>
+      </div>
+    </ng-template>
+  </main>
+</div>
